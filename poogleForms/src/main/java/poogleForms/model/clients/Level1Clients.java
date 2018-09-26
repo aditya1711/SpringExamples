@@ -40,7 +40,8 @@ public class Level1Clients extends ClientAbstract {
 		s = getLoginCredentials().toString() + "\n"
 				+ "Name " + getFirstName() + " " + getLastName() + "\n"
 						+ "AnswerIDs: ";
-		s= s + answerIDs.toString();
+		s= s + ((answerIDs==null)? "none" : answerIDs.toString());
+		s= s + clientType;
 		/*Iterator<Long> it = answerIDs.iterator();
 		while(it.hasNext()){
 			

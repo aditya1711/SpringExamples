@@ -1,6 +1,7 @@
 
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="form" uri='http://www.springframework.org/tags/form' %>﻿
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -13,27 +14,29 @@
 </head>
 <body>
 	${emailError}
+	<form:errors path="userCreated.*"/>
 	<form name="myform" action="UserSignUp" method="post"
 		onsubmit="return validateNulls()">
 
-		UserType: <select name="userType">
+		UserType: <select name="clientType">
 			<option value="LEVEL1">Level1</option>
 			<option value="LEVEL2">Level2</option>
-		</select> <BR> FirstName: <input type="text" id="firstnameInputID"
-			name="firstname"><BR> Lastname: <input type="text"
-			id="lastnameInputID" name="lastname"><BR> USERNAME: <input
-			type="text" id="usernameInputID" name="username"><BR>
-		Password: <input type="password" id="passwordInputID" name="password"><BR>
-		<input type="submit" id="btn" value="signUp"><BR>
+		</select> <BR>
+		FirstName: <input type="text" id="firstnameInputID" name="firstName"><BR>
+		Lastname: <input type="text" id="lastnameInputID" name="lastName"><BR>
+		USERNAME: <input type="text" id="usernameInputID" name="loginCredentials.username"><BR>
+		Password: <input type="password" id="passwordInputID"
+			name="loginCredentials.password"><BR> <input
+			type="submit" id="btn" value="signUp"><BR>
 	</form>
 
 
 	<script>
 		function validateNulls() {
-			var firstname = document.forms["myform"]["firstname"].value;
-			var lastname = document.forms["myform"]["lastname"].value;
-			var username = document.forms["myform"]["username"].value;
-			var password = document.forms["myform"]["password"].value;
+			var firstname = document.forms["myform"]["firstName"].value;
+			var lastname = document.forms["myform"]["lastName"].value;
+			var username = document.forms["myform"]["loginCredentials.username"].value;
+			var password = document.forms["myform"]["loginCredentials.password"].value;
 
 			if ((firstname == null || firstname == "")
 					&& (lastname == null || lastname == "")
@@ -50,7 +53,7 @@
 			}
 		}
 		function checkForExistingUsername(username) {
-			var check=true;
+			var check = true;
 			$.ajax({
 				async : false,
 				type : 'POST',

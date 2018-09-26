@@ -12,10 +12,15 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import poogleForms.DAO.AnswersDAO;
 import poogleForms.DAO.ClientsDAO;
 import poogleForms.DAO.FormDAO;
+import poogleForms.controller.configs.PoogleFormsContext;
+import poogleForms.controller.configs.ServletConfigurer;
 
 /**
  * Application Lifecycle Listener implementation class ContextListener
@@ -24,83 +29,93 @@ import poogleForms.DAO.FormDAO;
 @WebListener
 public class ContextListener implements ServletContextListener, ServletContextAttributeListener {
 
-    private   String DB_URL = null;
-	private   String DB_User = null;
-	private   String DB_Password = null;
+	private FormDAO formDAO;
+	private ClientsDAO clientsDAO;
+	private AnswersDAO answersDAO;
 
 	/**
-     * Default constructor. 
-     */
-    public ContextListener() {
-        // TODO Auto-generated constructor stub
-    }
+	 * Default constructor. 
+	 */
+	public ContextListener() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
-     * @see ServletContextAttributeListener#attributeAdded(ServletContextAttributeEvent)
-     */
-    public void attributeAdded(ServletContextAttributeEvent arg0)  { 
-         // TODO Auto-generated method stub
-    }
+	 * @see ServletContextAttributeListener#attributeAdded(ServletContextAttributeEvent)
+	 */
+	public void attributeAdded(ServletContextAttributeEvent arg0)  { 
+		// TODO Auto-generated method stub
+	}
 
 	/**
-     * @see ServletContextAttributeListener#attributeRemoved(ServletContextAttributeEvent)
-     */
-    public void attributeRemoved(ServletContextAttributeEvent arg0)  { 
-         // TODO Auto-generated method stub
-    }
+	 * @see ServletContextAttributeListener#attributeRemoved(ServletContextAttributeEvent)
+	 */
+	public void attributeRemoved(ServletContextAttributeEvent arg0)  { 
+		// TODO Auto-generated method stub
+	}
 
 	/**
-     * @see ServletContextListener#contextDestroyed(ServletContextEvent)
-     */
-    public void contextDestroyed(ServletContextEvent arg0)  { 
-         // TODO Auto-generated method stub
-    }
+	 * @see ServletContextListener#contextDestroyed(ServletContextEvent)
+	 */
+	public void contextDestroyed(ServletContextEvent arg0)  { 
+		// TODO Auto-generated method stub
+	}
 
 	/**
-     * @see ServletContextAttributeListener#attributeReplaced(ServletContextAttributeEvent)
-     */
-    public void attributeReplaced(ServletContextAttributeEvent arg0)  { 
-         // TODO Auto-generated method stub
-    }
+	 * @see ServletContextAttributeListener#attributeReplaced(ServletContextAttributeEvent)
+	 */
+	public void attributeReplaced(ServletContextAttributeEvent arg0)  { 
+		// TODO Auto-generated method stub
+	}
 
 	/**
-     * @see ServletContextListener#contextInitialized(ServletContextEvent)
-     */
-    public void contextInitialized(ServletContextEvent arg0)  { 
-         // TODO Auto-generated method stub
-    	DB_URL =  arg0.getServletContext().getInitParameter("DB_URL");
+	 * @see ServletContextListener#contextInitialized(ServletContextEvent)
+	 */
+	public void contextInitialized(ServletContextEvent arg0)  { 
+		// TODO Auto-generated method stub
+		/*   	DB_URL =  arg0.getServletContext().getInitParameter("DB_URL");
     	DB_User =  arg0.getServletContext().getInitParameter("DB_User");
     	DB_Password =  arg0.getServletContext().getInitParameter("DB_Password");
+    	//ApplicationContext springAppCtx  = new ClassPathXmlApplicationContext("spring.xml")*/
+
+    	ServletContext ctx = arg0.getServletContext();
+
+    	PoogleFormsContext springAppContext = PoogleFormsContext.getPoogleFormsContext(ServletConfigurer.class);
     	
-    	try {
-			FormDAO formDAO = FormDAO.getFormDAO(DB_URL, DB_User, DB_Password);
-			ClientsDAO clientsDAO = ClientsDAO.getClientDAO(DB_URL, DB_User, DB_Password);
-			AnswersDAO answersDAO = AnswersDAO.getAnswersDAO(DB_URL, DB_User, DB_Password);
-			ServletContext ctx = arg0.getServletContext();
-			
-			ctx.setAttribute("formDAO", formDAO);
-			ctx.setAttribute("clientsDAO", clientsDAO);
-			ctx.setAttribute("answersDAO", answersDAO);
-			
-			
-			Logger logger = LogManager.getLogger(ContextListener.class.getName());
-			System.out.println(ContextListener.class.getName());
-			
-			
-			logger.info("Ans Updated: ");
-			logger.debug("Ans Updated: ");
-			logger.error("Ans Updated: ");
-			logger.fatal("Ans Updated: ");
-			logger.warn("Ans Updated: ");
-			
-			System.out.println("enab;ed d" +logger.isDebugEnabled());
-			System.out.println("enab;ed I" +logger.isInfoEnabled());
-			
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
-	
+    	//springAppContext.refresh();
+    	
+    	ctx.setAttribute("formDAO", springAppContext.getBean("formDAO"));
+		ctx.setAttribute("clientsDAO", springAppContext.getBean("clientsDAO"));
+		ctx.setAttribute("answersDAO", springAppContext.getBean("answersDAO"));
+		
+/*		FormDAO formDAO = (FormDAO) springAppContext.getBean("formDAO");
+    	AnswersDAO answersDAO = (AnswersDAO) springAppContext.getBean("answersDAO");
+    	ClientsDAO clientsDAO = (ClientsDAO) springAppContext.getBean("clientsDAO");
+*/
+    	
+
+/*
+    	System.out.println("DAOs condition:   " +formDAO + " " + clientsDAO + " " + answersDAO);
+    	System.out.println(clientsDAO.getClientByUsername("RajuChacha1811", "RajuChacha1811"));
+
+*/
+		
+
+		/*Logger logger = LogManager.getLogger(ContextListener.class.getName());
+		System.out.println(ContextListener.class.getName());
+
+
+		logger.info("Ans Updated: ");
+		logger.debug("Ans Updated: ");
+		logger.error("Ans Updated: ");
+		logger.fatal("Ans Updated: ");
+		logger.warn("Ans Updated: ");
+
+		System.out.println("enab;ed d" +logger.isDebugEnabled());
+		System.out.println("enab;ed I" +logger.isInfoEnabled());*/
+
+
+
+	}
+
 }

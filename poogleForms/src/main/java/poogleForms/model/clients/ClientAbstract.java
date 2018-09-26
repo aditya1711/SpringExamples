@@ -4,6 +4,7 @@ public abstract class ClientAbstract implements Client {
 	LoginCredentials loginCredentials;
 	String firstName, lastName;
 	ClientTypes clientType;
+	
 	public LoginCredentials getLoginCredentials() {
 		return loginCredentials;
 	}
@@ -31,6 +32,7 @@ public abstract class ClientAbstract implements Client {
 		return clientType;
 	}
 	public void setClientType(ClientTypes clientType) {
+		//this.loginCredentials.setType(clientType);
 		this.clientType = clientType;
 	}
 }
