@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -38,7 +40,9 @@
 		currQuestionType = "MCQ";
 		$("#dialogAddQuestionButtons").hide();
 		$("#addQuestionForm").show();
+		$("#addQuestionForm").attr("modelAttribute", "CreatedQuestionMCQ");
 		$("#optionsDiv").show();
+		
 		/* $("#dialog").load("CreateForm.jsp" + " #addQuestionForm", {},
 				function() {
 					$("#addQuestionForm").show();
@@ -50,6 +54,7 @@
 		currQuestionType = "TextTypeQuestion";
 		$("#dialogAddQuestionButtons").hide();
 		$("#addQuestionForm").show();
+		$("#addQuestionForm").attr("modelAttribute", "CreatedQuestionTQ");
 		$("#optionsDiv").hide();
 		/* $("#dialog").load("CreateForm.jsp" + " #addQuestionForm", {},
 				function() {
@@ -65,6 +70,7 @@
 		console.log("optionNumber= " + optionNumber)
 		//i.setAttribute("id", "option@" + optionNumber);
 		i.setAttribute("class", "option");
+		i.setAttribute("name","options");
 		optionNumber++;
 		//i.setAttribute("name", "option@" + optionNumber++);
 		$("#" + id).append(i);
@@ -86,12 +92,19 @@
 		console.log(currQuestionType);
 		console.log($("#questionPrompt").val());
 		console.log(optionsSTring);
+		
+		var cuurQuestionTypeController;
+		
+		if(currQuestionType.equals("TextTypeQuestion")){
+			cuurQuestionTypeController= "CreateQuestionTQ";
+		}else if(currQuestionType.equals("MCQ")){
+			cuurQuestionTypeController= "CreateQuestionMCQ";
+		}
 
-		var newQuestionHTML = $.post("CreateQuestion", {
-			command:"createQuestion",
+		var newQuestionHTML = $.post(cuurQuestionTypeController, {
 			formID : '${form.ID}',
-			questionPrompt : $("#questionPrompt").val(),
-			questionType : currQuestionType,
+			prompt : $("#questionPrompt").val(),
+			type : currQuestionType,
 			options : optionsSTring,
 		}, function(data) {
 			$("#dialog").dialog('close');
@@ -158,7 +171,7 @@
 			<br> <BR>
 		</div>
 
-		<form id="addQuestionForm">
+		<form:form method="post" id="addQuestionForm" modelAttribute="CreatedQuestionTQ">
 			<label>Question Prompt:</label> <input id="questionPrompt"
 				name="questionPrompt" type="text">
 
@@ -170,7 +183,7 @@
 
 			<button id="submitQuestion" type="button"
 				onclick="submitQuestionFunc()">Submit</button>
-		</form>
+		</form:form>
 	</div>
 
 	<button id="addQuestionButton" type="button" onclick="addQuestion()">ADD

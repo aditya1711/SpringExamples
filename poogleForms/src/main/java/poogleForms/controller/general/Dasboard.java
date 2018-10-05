@@ -44,8 +44,8 @@ public class Dasboard {
     }
     
     @RequestMapping(value={"Dashboard"}, method=RequestMethod.GET)
-	protected void get(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		post("0",request, response);
+	protected void get(@RequestParam(value = "displayIndex" , defaultValue = "1") String displayIndexString ,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		post(displayIndexString,request, response);
 	}
 
 	@RequestMapping(value={"Dashboard"}, method=RequestMethod.POST)

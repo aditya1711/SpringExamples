@@ -56,41 +56,24 @@ public class UserSignUp{
 	}
 	
 	@RequestMapping(value = "/UserSignUp" ,  method = RequestMethod.GET)
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		/*response.getWriter().append("Served at: ").append(request.getContextPath());*/
-		request.getRequestDispatcher("SignUp.jsp").forward(request, response);
+	protected String doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		return "SignUp";
 	}
 	
 	@RequestMapping(value = "/UserSignUp" ,  method = RequestMethod.POST)
 	protected ModelAndView doPost(@ModelAttribute("userCreated") Level1Clients l1c, BindingResult bindResult , HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		try {
-			/*String userType = request.getParameter("userType");
-			String firstName = request.getParameter("firstName");
-			String lastName = request.getParameter("lastName");
-			String username = request.getParameter("username");
-			String password = request.getParameter("password");
-			Level1Clients l1c = new Level1Clients();
-			l1c.setClientType(ClientTypes.LEVEL1);
-			l1c.setFirstName(firstName);
-			l1c.setLastName(lastName);
-			l1c.setLoginCredentials(new LoginCredentials(username, password, ClientTypes.LEVEL1));*/
-			
-			/*if(l1c.getLoginCredentials().getType().equals("LEVEL2")){
-				l1c.getLoginCredentials().setType(ClientTypes.LEVEL2);
-			}*/
 			if(bindResult.hasErrors()){
 				System.out.println(bindResult.getAllErrors());
 				return new ModelAndView("SignUp");
-				
 			}
 			
 			System.out.println(l1c);
-			//clientsDAO.addClientToDB(l1c);
+			clientsDAO.addClientToDB(l1c);
 			
-			//request.getRequestDispatcher("Login").forward(request, response);
-			//ControllerLogs.createLog(Level.INFO,"Creating New User " + l1c );
+			
 			return new ModelAndView("login");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

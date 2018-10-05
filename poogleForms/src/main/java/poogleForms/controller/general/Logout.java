@@ -10,12 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.stereotype.Controller;
+
 import poogleForms.maintainance.logs.ControllerLogs;
 
 /**
  * Servlet implementation class Logout
  */
 @WebServlet("/Logout")
+@Controller
 public class Logout extends HttpServlet implements ControllerLogs{
 	private static final long serialVersionUID = 1L;
        

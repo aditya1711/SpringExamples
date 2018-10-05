@@ -43,8 +43,4 @@
 		<filter-name>AuthorizationFilter</filter-name>
 		<url-pattern></url-pattern>
 	</filter-mapping>
-	<filter-mapping>
-		<filter-name>JspIncludesFilter</filter-name>
-		<url-pattern></url-pattern>
-	</filter-mapping>
 </web-app>

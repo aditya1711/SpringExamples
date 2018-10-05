@@ -18,6 +18,12 @@ public class Level1Clients extends ClientAbstract {
 		this.answerIDs = answerIDs;
 	}
 	
+	public HashSet<Long> getAnswerIDs() {
+		return answerIDs;
+	}
+	public void setAnswerIDs(HashSet<Long> answerIDs) {
+		this.answerIDs = answerIDs;
+	}
 	public void addAnsweredForm(HashSet<Long> answerIDs){
 		Iterator<Long> it = answerIDs.iterator();
 		while(it.hasNext()){
@@ -29,23 +35,14 @@ public class Level1Clients extends ClientAbstract {
 		answerIDs.add(answerID);
 	}
 	
-	/*public Answer getAnswer(Long answerID){
-		if(answerIDs.contains(answerID)){
-			return AnswersDAO.getDAO().getAnswer(answerID);
-		}
-		return null;
-	}*/
 	public String toString(){
 		String s ="";
 		s = getLoginCredentials().toString() + "\n"
 				+ "Name " + getFirstName() + " " + getLastName() + "\n"
 						+ "AnswerIDs: ";
+		s= s + "ClientType: " + loginCredentials.getType();
 		s= s + ((answerIDs==null)? "none" : answerIDs.toString());
-		s= s + clientType;
-		/*Iterator<Long> it = answerIDs.iterator();
-		while(it.hasNext()){
-			
-		}*/
+		
 		return s;
 	}
 }

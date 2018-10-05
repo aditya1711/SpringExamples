@@ -18,7 +18,7 @@
 	<form name="myform" action="UserSignUp" method="post"
 		onsubmit="return validateNulls()">
 
-		UserType: <select name="clientType">
+		UserType: <select name="loginCredentials.type">
 			<option value="LEVEL1">Level1</option>
 			<option value="LEVEL2">Level2</option>
 		</select> <BR>

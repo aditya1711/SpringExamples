@@ -3,7 +3,7 @@ package poogleForms.model.clients;
 public abstract class ClientAbstract implements Client {
 	LoginCredentials loginCredentials;
 	String firstName, lastName;
-	ClientTypes clientType;
+	//ClientTypes clientType;
 	
 	public LoginCredentials getLoginCredentials() {
 		return loginCredentials;
@@ -27,12 +27,5 @@ public abstract class ClientAbstract implements Client {
 	@Override
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-	public ClientTypes getClientType() {
-		return clientType;
-	}
-	public void setClientType(ClientTypes clientType) {
-		//this.loginCredentials.setType(clientType);
-		this.clientType = clientType;
 	}
 }

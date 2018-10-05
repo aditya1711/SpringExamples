@@ -20,7 +20,7 @@
 	<div id="dialog">
 		<form method="post" action="${callingPage}">
 			<label>Question Prompt:</label> <input id="questionPrompt"
-				name="questionPrompt" type="text">
+				name="prompt" type="text">
 
 			<p id="optionsDiv"></p>
 			<button type="button" onclick="addOption('optionsDiv')">add

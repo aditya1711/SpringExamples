@@ -1,6 +1,6 @@
 package poogleForms.controller.configs;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+/*import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class PoogleFormsContext extends AnnotationConfigApplicationContext{
 	private static PoogleFormsContext context;
@@ -18,4 +18,4 @@ public class PoogleFormsContext extends AnnotationConfigApplicationContext{
 		}
 		return context;
 	}
-}
+}*/

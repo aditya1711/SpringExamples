@@ -1,4 +1,4 @@
-package poogleForms.controller.form;
+ package poogleForms.controller.form;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
 import poogleForms.DAO.FormDAO;
 import poogleForms.maintainance.logs.ControllerLogs;
 import poogleForms.model.clients.Client;
@@ -20,9 +23,18 @@ import poogleForms.model.form.*;
  * Servlet implementation class CreateForm
  */
 @WebServlet("/CreateForm")
+@Controller
 public class CreateForm extends HttpServlet implements ControllerLogs {
 	private static final long serialVersionUID = 1L;
 	private FormDAO formDAO;        
+	public FormDAO getFormDAO() {
+		return formDAO;
+	}
+	@Autowired
+	public void setFormDAO(FormDAO formDAO) {
+		this.formDAO = formDAO;
+	}
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -30,15 +42,7 @@ public class CreateForm extends HttpServlet implements ControllerLogs {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
-	public void init(){
-		formDAO = (FormDAO) getServletContext().getAttribute("formDAO");
-
-	}
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());

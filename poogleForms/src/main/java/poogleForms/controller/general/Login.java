@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
 import poogleForms.DAO.ClientsDAO;
-import poogleForms.controller.configs.PoogleFormsContext;
 import poogleForms.maintainance.logs.ControllerLogs;
 import poogleForms.model.clients.Client;
 import poogleForms.model.clients.Level1Clients;
@@ -58,7 +57,7 @@ public class Login {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		if(session.getAttribute("isClientValidationDone")!=null && session.getAttribute("isClientValidationDone").equals(true) && session.getAttribute("client")!=null){
-			return new Dasboard().post("0", request, response);
+			return new ModelAndView("forward:Dashboard.get");
 		}else{
 			session.setAttribute("isClientValidationDone", false);
 			ModelAndView loginPage = new ModelAndView();

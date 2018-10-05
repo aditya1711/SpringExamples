@@ -12,66 +12,48 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
 import poogleForms.DAO.AnswersDAO;
 import poogleForms.DAO.FormDAO;
 import poogleForms.maintainance.logs.ControllerLogs;
 import poogleForms.model.form.Form;
 
-/**
- * Servlet implementation class DisplayAllForms
- */
-@WebServlet("/DisplayAllForms.NOACCESS")
-public class DisplayAllForms extends HttpServlet implements ControllerLogs {
+@Controller
+public class DisplayAllForms {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+
 	FormDAO formDAO ;
 	
-    public DisplayAllForms() {
+    public FormDAO getFormDAO() {
+		return formDAO;
+	}
+    @Autowired
+	public void setFormDAO(FormDAO formDAO) {
+		this.formDAO = formDAO;
+	}
+
+	public DisplayAllForms() {
         super();
         // TODO Auto-generated constructor stub
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-    
-    public void init(){
-    	/*ServletContext ctx = getServletContext();
-    	try {
-			formDAO = FormDAO.getFormDAO(ctx.getAttribute("DB_URL").toString(), ctx.getAttribute("DB_Username").toString(), ctx.getAttribute("DB_Password").toString());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("DB initialzters errors");
-			e.printStackTrace();
-		}*/
-    	/*String DB_URL = "jdbc:sqlserver://ggku3ser2;instanceName=SQL2016;databaseName=poogleForms";
-		String DB_User = "sa";
-		String DB_Password = "Welcome@1234";
-		try {
-			formDAO = FormDAO.getFormDAO(DB_URL, DB_User, DB_Password);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-    	formDAO = (FormDAO) getServletContext().getAttribute("formDAO"); 
-   	 
-    }
-    
+	
+	@RequestMapping(value={"DisplayAllForms"}, method=RequestMethod.GET)
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stud
 
 		doPost(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@RequestMapping(value={"DisplayAllForms"}, method=RequestMethod.POST)
+	protected ModelAndView doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		try {
+			ModelAndView mv = new ModelAndView();
 			String displayIndexString =request.getParameter("displayIndex");
 			if(displayIndexString==null){
 				Object o  = request.getAttribute("displayIndex");
@@ -92,9 +74,9 @@ public class DisplayAllForms extends HttpServlet implements ControllerLogs {
 				noOfPages++;
 			}
 			
-			request.setAttribute("noOfPages", noOfPages.toString());
-			request.setAttribute("displayIndex", displayIndexString);
-			request.setAttribute("callingPage", "DisplayAllForms");
+			mv.addObject("noOfPages", noOfPages.toString());
+			mv.addObject("displayIndex", displayIndexString);
+			mv.addObject("callingPage", "DisplayAllForms");
 			
 			ArrayList<Form> forms = new ArrayList<Form>();
 			
@@ -102,12 +84,14 @@ public class DisplayAllForms extends HttpServlet implements ControllerLogs {
 				forms.add(formDAO.getForm(formIDsList.get(i)));
 			}
 			
-			request.setAttribute("forms", forms);
-			request.getRequestDispatcher("displayAllForms.jsp").forward(request, response);
+			
+			mv.addObject("forms", forms);
+			mv.setViewName("displayAllForms");
+			return mv;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			response.sendRedirect("DeveloperError.jsp");
+			return new ModelAndView("DeveloperError");
 		}
 	}
 

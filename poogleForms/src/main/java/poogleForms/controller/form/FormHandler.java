@@ -12,6 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
 import poogleForms.DAO.AnswersDAO;
 import poogleForms.DAO.FormDAO;
 import poogleForms.maintainance.logs.ControllerLogs;
@@ -21,8 +27,8 @@ import poogleForms.model.form.*;
 /**
  * Servlet implementation class Form
  */
-@WebServlet("/FormHandler")
-public class FormHandler extends HttpServlet implements ControllerLogs{
+@Controller
+public class FormHandler {
 	private static final long serialVersionUID = 1L;
        
     /**
@@ -38,31 +44,26 @@ public class FormHandler extends HttpServlet implements ControllerLogs{
 	 */
     
     FormDAO formDAO ;
-    AnswersDAO answersDAO;
+    public FormDAO getFormDAO() {
+		return formDAO;
+	}
+    @Autowired
+	public void setFormDAO(FormDAO formDAO) {
+		this.formDAO = formDAO;
+	}
+
+	public AnswersDAO getAnswersDAO() {
+		return answersDAO;
+	}
+	
+	@Autowired
+	public void setAnswersDAO(AnswersDAO answersDAO) {
+		this.answersDAO = answersDAO;
+	}
+
+	AnswersDAO answersDAO;
     
-    public void init(){
-    	/*ServletContext ctx = getServletContext();
-    	try {
-			formDAO = FormDAO.getFormDAO(ctx.getAttribute("DB_URL").toString(), ctx.getAttribute("DB_Username").toString(), ctx.getAttribute("DB_Password").toString());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			System.out.println("DB initialzters errors");
-			e.printStackTrace();
-		}*/
-    	/*String DB_URL = "jdbc:sqlserver://ggku3ser2;instanceName=SQL2016;databaseName=poogleForms";
-		String DB_User = "sa";
-		String DB_Password = "Welcome@1234";
-		try {
-			formDAO = FormDAO.getFormDAO(DB_URL, DB_User, DB_Password);
-			answersDAO = AnswersDAO.getAnswersDAO(DB_URL, DB_User, DB_Password);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-    	 formDAO = (FormDAO) getServletContext().getAttribute("formDAO"); 
-    	 answersDAO = (AnswersDAO) getServletContext().getAttribute("answersDAO");
-    }
-    
+	@RequestMapping(value={"FormHandler"}, method=RequestMethod.GET)
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -91,10 +92,9 @@ public class FormHandler extends HttpServlet implements ControllerLogs{
 		
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	
+	@RequestMapping(value={"FormHandler"}, method=RequestMethod.POST)
+	protected ModelAndView doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		try {
 			HttpSession session = (HttpSession)request.getSession();
@@ -119,11 +119,11 @@ public class FormHandler extends HttpServlet implements ControllerLogs{
 				}
 				
 			}
-			response.sendRedirect("Dashboard");
+			return new ModelAndView("forward:Dashboard.get");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			response.sendRedirect("DeveloperError.jsp");
+			return new ModelAndView("DeveloperError");
 		}
 	}
 

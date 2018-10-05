@@ -12,6 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
 import poogleForms.DAO.AnswersDAO;
 import poogleForms.DAO.FormDAO;
 import poogleForms.maintainance.logs.ControllerLogs;
@@ -25,53 +31,50 @@ import poogleForms.model.form.Form;
 /**
  * Servlet implementation class DisplayFormsByUser
  */
-@WebServlet("/DisplayFormsByUser")
-public class DisplayFormsByUser extends HttpServlet implements ControllerLogs{
+@Controller
+public class DisplayFormsByUser {
 	private static final long serialVersionUID = 1L;
 	
 	FormDAO formDAO ;
+	public FormDAO getFormDAO() {
+		return formDAO;
+	}
+	@Autowired
+	public void setFormDAO(FormDAO formDAO) {
+		this.formDAO = formDAO;
+	}
+
+	public AnswersDAO getAnswersDAO() {
+		return answersDAO;
+	}
+	@Autowired
+	public void setAnswersDAO(AnswersDAO answersDAO) {
+		this.answersDAO = answersDAO;
+	}
+
 	AnswersDAO answersDAO;
 	
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
+
     public DisplayFormsByUser() {
         super();
         // TODO Auto-generated constructor stub
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
     
-    public void init(){
-    	/*String DB_URL = "jdbc:sqlserver://ggku3ser2;instanceName=SQL2016;databaseName=poogleForms";
-		String DB_User = "sa";
-		String DB_Password = "Welcome@1234";
-		try {
-			formDAO = FormDAO.getFormDAO(DB_URL, DB_User, DB_Password);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		formDAO = (FormDAO) getServletContext().getAttribute("formDAO");
-		answersDAO = (AnswersDAO) getServletContext().getAttribute("answersDAO");
-    }
-    
+    @RequestMapping(value={"DisplayFormsByUser"}, method=RequestMethod.GET)
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
 		doPost(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @RequestMapping(value={"DisplayFormsByUser"}, method=RequestMethod.POST)
+	protected ModelAndView doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
 		try {
 			HttpSession session = (HttpSession)request.getSession();
+			
+			ModelAndView mv = new ModelAndView("displayForms");
 			
 			String displayIndexString =request.getParameter("displayIndex");
 			if(displayIndexString==null){
@@ -95,9 +98,10 @@ public class DisplayFormsByUser extends HttpServlet implements ControllerLogs{
 			if((formIDsList.size())%10>0){
 				noOfPages++;
 			}
-			request.setAttribute("noOfPages", noOfPages.toString());
-			request.setAttribute("displayIndex", displayIndexString);
-			request.setAttribute("callingPage", "DisplayFormsByUser");
+			
+			mv.addObject("noOfPages", noOfPages.toString());
+			mv.addObject("displayIndex", displayIndexString);
+			mv.addObject("callingPage", "DisplayFormsByUser");
 			
 			ArrayList<Form> forms = new ArrayList<Form>();
 			ArrayList<String> formReports = new ArrayList<String>();
@@ -114,17 +118,16 @@ public class DisplayFormsByUser extends HttpServlet implements ControllerLogs{
 			
 			
 			
+			mv.addObject("forms", forms);
+			mv.addObject("formReports", formReports);
+			mv.addObject("callingPage", "DisplayFormsByUser");
+			mv.addObject("pageHeading", "Forms User Created:");
 			
-			
-			request.setAttribute("forms", forms);
-			request.setAttribute("formReports", formReports);
-			request.setAttribute("callingPage", "DisplayFormsByUser");
-			request.setAttribute("pageHeading", "Forms User Created:");
-			request.getRequestDispatcher("displayForms.jsp").forward(request, response);
+			return mv;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			response.sendRedirect("DeveloperError.jsp");
+			return new ModelAndView("DeveloperError");
 		}
 		
 	}
