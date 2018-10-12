@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<bean id="dbURL" class="java.lang.String">
+		<constructor-arg
+			value="jdbc:sqlserver://ggku3ser2;instanceName=SQL2016;databaseName=poogleForms" />
+	</bean>
+	
+	<bean id="userID" class="java.lang.String">
+		<constructor-arg value="sa" />
+	</bean>
+	
+	<bean id="password" class="java.lang.String">
+		<constructor-arg value="Welcome@1234" />
+	</bean>
+	
+	<!-- <bean
+		class="poogleForms.controller.configs.PoogleFormBeanFactoryPostProcessor" /> -->
+
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName">
+			<bean class="java.lang.String">
+				<constructor-arg
+					value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+			</bean>
+		</property>
+		<property name = "username" ref = "userID"/>
+		<property name="password" ref = "password"></property>
+		<property name="url" ref = "dbURL"></property>
+		<property name="initialSize" value = "5"></property>
+ 	</bean>
+ 	
+ 	<bean id = "mapper" class="com.fasterxml.jackson.databind.ObjectMapper" autowire = "byName"></bean>
+
+	<context:component-scan
+		base-package="com.ggktech.poogleFormsSpring.DAO.implementations,com.ggktech.poogleFormsSpring.service.springConfigs"></context:component-scan>
+</beans>

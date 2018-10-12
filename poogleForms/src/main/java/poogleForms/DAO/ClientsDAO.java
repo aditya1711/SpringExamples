@@ -115,13 +115,14 @@ public class ClientsDAO extends DAO implements DOAsLogs{
 			c.setLoginCredentials(new LoginCredentials(rs.getString("username"),rs.getString("password"), ClientTypes.getClientType(rs.getString("clientType"))));
 			c.setFirstName(rs.getString("firstName"));
 			c.setLastName(rs.getString("lastName"));
+			addLevel1Data(c, username);
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		addLevel1Data(c, username);
+		
 		return c;
 	}
 	private void addLevel1Data(Client client, String username){
