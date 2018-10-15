@@ -6,12 +6,16 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @ComponentScan(basePackages = {"com.ggktech.poogleFormsSpring"})
+@PropertySources({@PropertySource("classpath:experimental.properties")})
 @EnableTransactionManagement
 public class SpringConfiguration {
 	@Bean
@@ -47,5 +51,11 @@ public class SpringConfiguration {
 	@Bean
 	public String dbPassword(){
 		return "Welcome@1234";
+	}
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertyConfigInDev(){
+		/*PropertySourcesPlaceholderConfigurer as = new PropertySourcesPlaceholderConfigurer();
+		as.setLocation(new );*/
+		return new PropertySourcesPlaceholderConfigurer();
 	}
 }

@@ -13,6 +13,11 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,15 +29,18 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ggktech.poogleFormsSpring.DAO.events.DbInsertEvent;
 import com.ggktech.poogleFormsSpring.DAO.interfaces.AnswerDAO;
 import com.ggktech.poogleFormsSpring.service.models.forms.Answer;
 import com.ggktech.poogleFormsSpring.service.models.forms.FormModelTypes;
 
 @Repository
-public class AnswerDAOImpl extends ParentDAO implements AnswerDAO{
+@PropertySources({@PropertySource("classpath:experimental.properties")})
+public class AnswerDAOImpl extends ParentDAO implements AnswerDAO,ApplicationEventPublisherAware{
 	
 	
 	public ObjectMapper mapper;
+	private ApplicationEventPublisher eventPublisher;
 	
 	public ObjectMapper getMapper() {
 		return mapper;
@@ -95,7 +103,7 @@ public class AnswerDAOImpl extends ParentDAO implements AnswerDAO{
 		
 		return new HashSet<Long>(formIDList);
 	}
-
+	
 	@Override
 	@Transactional
 	public Long insertAnswerInDB(Answer ans) throws DataAccessException, JsonProcessingException {
@@ -111,6 +119,9 @@ public class AnswerDAOImpl extends ParentDAO implements AnswerDAO{
 				String queryForInsertingAnswer = "insert into answers (ID,answerJson) " + 
 						"values ((select ID from IDTable where ID=?),?); ";
 				getJdbcTemplate().update(queryForInsertingAnswer, new Object[]{idTableInsertGeneratedKey,ans.toJSONString()});
+				System.out.println();
+				eventPublisher.publishEvent(new DbInsertEvent(ans));
+				
 				return idTableInsertGeneratedKey;
 			}
 		}
@@ -136,6 +147,7 @@ public class AnswerDAOImpl extends ParentDAO implements AnswerDAO{
 				"where json_value(answerJson, '$.questionID') = ? and json_value(answerJson, '$.username') = ?";
 		int rowsUpdated = getJdbcTemplate().update(queryForUpdateAnswer,new Object[]{ans.toJSONString(),ans.getQuestionID(),ans.getUsername()});
 		if(rowsUpdated==1){
+			eventPublisher.publishEvent(new DbInsertEvent(ans));
 			return true;
 		}
 		else{
@@ -178,5 +190,11 @@ public class AnswerDAOImpl extends ParentDAO implements AnswerDAO{
 			return null;
 		}
 		
+	}
+
+	@Override
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+		// TODO Auto-generated method stub
+		this.eventPublisher = applicationEventPublisher;
 	}
 }
