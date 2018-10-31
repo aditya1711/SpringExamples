@@ -1,8 +1,16 @@
 package poogleForms.model.clients;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 public abstract class ClientAbstract implements Client {
-	LoginCredentials loginCredentials;
-	String firstName, lastName;
+	
+	@Valid @NotNull
+	private LoginCredentials loginCredentials;
+	
+	@Pattern(regexp="[^0-9]*" , message = "Name must not contain numbers")
+	private String firstName, lastName;
 	//ClientTypes clientType;
 	
 	public LoginCredentials getLoginCredentials() {

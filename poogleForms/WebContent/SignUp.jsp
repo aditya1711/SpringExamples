@@ -13,8 +13,24 @@
 </script>
 </head>
 <body>
-	${emailError}
 	<form:errors path="userCreated.*"/>
+	
+	<%-- <form name="myform" action="UserSignUp" method="post"
+		onsubmit="return validateNulls()">
+
+		UserType: <select name="loginCredentials.type">
+			<option value="LEVEL1">Level1</option>
+			<option value="LEVEL2">Level2</option>
+		</select> <BR>
+		FirstName: <input type="text" id="firstnameInputID" name="firstName"><BR>
+		Lastname: <input type="text" id="lastnameInputID" name="lastName"><BR>
+		USERNAME: <input type="text" id="usernameInputID" name="loginCredentials.username"><BR>
+		Password: <input type="password" id="passwordInputID"
+			name="loginCredentials.password"><BR> <input
+			type="submit" id="btn" value="signUp"><BR>
+	</form> --%>
+	
+	
 	<form name="myform" action="UserSignUp" method="post"
 		onsubmit="return validateNulls()">
 
@@ -44,24 +60,49 @@
 					&& (password == null || password == "")) {
 				alert('All fields are mandatory');
 				return false;
-			} else if (checkForExistingUsername(username)) {
-				alert("Username Already Exists");
-				return false;
-			} else {
-				alert("Login To continue");
-				return true;
+			} 
+			else{
+				var check = true;
+				$.ajax({
+					async : false,
+					type : 'POST',
+					dataType : "text",
+					url : "validateUser",
+					data : {
+						firstName : firstname,
+						lastName :	lastname,
+						"loginCredentials.username" : username,
+						"loginCredentials.password" : password
+						//user : $('form[name=myForm]').serialize()
+					},
+					success : function(postDataResult) {
+						console.log(postDataResult);
+						var result = JSON.parse(postDataResult);
+						if (result.result == false) {
+							check = false;
+							alert(result.message);
+							//alert("ugabuga2");
+						}else {
+							check = true;
+							//alert("ugabuga");
+						}
+						console.log(check);
+					}
+				});
+				console.log(check);
+				return check;
 			}
 		}
-		function checkForExistingUsername(username) {
+		
+		function validateUser(user) {
 			var check = true;
 			$.ajax({
 				async : false,
 				type : 'POST',
 				dataType : "text",
-				url : "UsernameCheck",
+				url : "checkForExistingUsername",
 				data : {
-					command : "checkForExistingUsername",
-					username : username
+					user : user
 				},
 				success : function(postDataResult) {
 					if (postDataResult == "false") {
@@ -79,24 +120,6 @@
 			});
 			console.log(check);
 			return check;
-
-			/* $.post("UsernameCheck",{command:"checkForExistingUsername" ,username: username},function(data){
-				if (data=="false"){
-					check= false;
-					alert("ugabuga2");
-				}
-				else if(data=="true"){
-					check= true;
-					alert("ugabuga1");
-				}
-				else{
-					check=true;
-					alert("ugabuga");
-				}
-				console.log(check);
-				return check;
-			}); */
-
 		}
 	</script>
 </body>

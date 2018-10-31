@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,12 +106,24 @@ public class FormDAOImpl extends ParentDAO implements FormDAO {
 	@Transactional
 	public Long addFormPrototypeToDB(Form f) {
 		// TODO Auto-generated method stub
-		Long idTableGeneratedId = daosHelper.modelInsert(FormModelTypes.FORM);
-		String queryForInsertingFormSpecificDetatils = "insert into forms (name, username, ID) " +
-				"values (?,(select username from client where username=?), (select ID from IDTable where ID=?)); ";
-		int rowsUpdate = getJdbcTemplate().update(queryForInsertingFormSpecificDetatils, new Object[]{f.getName(), f.getAdminUsername(), idTableGeneratedId});
+		Long idTableGeneratedId;
+		int rowsUpdate;
+		try {
+			idTableGeneratedId = daosHelper.modelInsert(FormModelTypes.FORM);
+			
+			int i = 0/0;
+			
+			String queryForInsertingFormSpecificDetatils = "insert into forms (name, username, ID) " +
+					"values (?,(select username from client where username=?), (select ID from IDTable where ID=?)); ";
+			rowsUpdate = getJdbcTemplate().update(queryForInsertingFormSpecificDetatils, new Object[]{f.getName(), f.getAdminUsername(), idTableGeneratedId});
+			return (rowsUpdate==1) ? idTableGeneratedId : null;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println("?||||||||||||||||||||||||");
+			e.printStackTrace();
+		}
+		return null;
 		
-		return (rowsUpdate==1) ? idTableGeneratedId : null;
 	}
 	@Override
 	public Long updateFormName(Long formID, String formName) {

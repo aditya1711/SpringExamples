@@ -1,7 +1,20 @@
 package poogleForms.model.clients;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+
+@PropertySource("classpath:ValidationMessages.properties")
 public class LoginCredentials {
-	private String username, password;
+	
+	@NotNull @IsValidNewUsername
+	private String username;
+	
+	@Size(min=6, max=15, message= "#{${Size.password}}")
+	private String  password;
+	@NotNull
 	private ClientTypes type;
 	
 	public String getUsername() {

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @PropertySources({@PropertySource("classpath:experimental.properties")})
 @EnableTransactionManagement
 public class SpringConfiguration {
+	
 	@Bean
 	public DataSource dataSource(){
 		BasicDataSource ds =  new BasicDataSource();
@@ -58,4 +59,15 @@ public class SpringConfiguration {
 		as.setLocation(new );*/
 		return new PropertySourcesPlaceholderConfigurer();
 	}
+	
+	 @Bean
+	   public LocalSessionFactoryBean sessionFactory() {
+	      LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+	      sessionFactory.setDataSource(restDataSource());
+	      sessionFactory.setPackagesToScan(
+	        new String[] { "org.baeldung.spring.persistence.model" });
+	      sessionFactory.setHibernateProperties(hibernateProperties());
+	 
+	      return sessionFactory;
+	   }
 }
